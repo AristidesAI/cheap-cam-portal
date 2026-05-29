@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.cheapcamportal.portal</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>{{PYTHON_BIN}}</string>
+    <string>{{INSTALL_DIR}}/portal/portal.py</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>{{INSTALL_DIR}}</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>ThrottleInterval</key>
+  <integer>5</integer>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+  </dict>
+
+  <key>StandardOutPath</key>
+  <string>{{INSTALL_DIR}}/logs/portal.log</string>
+  <key>StandardErrorPath</key>
+  <string>{{INSTALL_DIR}}/logs/portal.log</string>
+</dict>
+</plist>

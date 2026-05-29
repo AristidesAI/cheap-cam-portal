@@ -1,0 +1,16 @@
+# local config (contains your cam credentials)
+.env
+
+# generated from template at setup time
+mediamtx.yml
+
+# runtime state
+.mediamtx.pid
+.portal.pid
+logs/*
+!logs/.gitkeep
+
+# OS junk
+.DS_Store
+__pycache__/
+*.pyc

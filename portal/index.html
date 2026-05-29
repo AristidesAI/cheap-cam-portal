@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cam Portal</title>
+<link rel="stylesheet" href="/portal.css">
+</head>
+<body>
+<div id="app">
+  <main id="stage">
+    <div id="frame">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="overlay" hidden></canvas>
+      <div id="badge" data-state="connecting">connecting…</div>
+      <div id="recDot" hidden>● REC <span id="recTime">0:00</span></div>
+    </div>
+  </main>
+  <aside id="panel">
+    <header>
+      <h1>Cam Portal</h1>
+      <div class="row">
+        <span class="pill" id="resPill">— × —</span>
+        <span class="pill" id="bitratePill">— kbps</span>
+        <span class="pill" id="fpsPill">— fps</span>
+      </div>
+    </header>
+
+    <section class="group">
+      <h2>Stream</h2>
+      <div class="row">
+        <button id="btnReconnect" class="btn">Reconnect</button>
+        <button id="btnMute"      class="btn toggle" aria-pressed="true">🔇 Muted</button>
+        <button id="btnFs"        class="btn">⛶ Fullscreen</button>
+        <button id="btnPip"       class="btn">⧉ PiP</button>
+      </div>
+      <label class="slider">
+        <span>Volume <em id="volLbl">0%</em></span>
+        <input type="range" id="vol" min="0" max="100" value="0">
+      </label>
+    </section>
+
+    <section class="group">
+      <h2>Capture</h2>
+      <div class="row">
+        <button id="btnSnapLocal"  class="btn primary">📸 Screenshot (local)</button>
+        <button id="btnSnapServer" class="btn">📸 Screenshot (server, full quality)</button>
+      </div>
+      <div class="row">
+        <button id="btnRecBrowser" class="btn">⏺ Record (browser)</button>
+        <button id="btnRecServer"  class="btn primary">⏺ Record (server MP4)</button>
+      </div>
+      <div id="recordings"></div>
+    </section>
+
+    <section class="group">
+      <h2>Image controls</h2>
+      <div class="row">
+        <button class="btn xform" data-rotate="0"   aria-pressed="true">0°</button>
+        <button class="btn xform" data-rotate="90">90°</button>
+        <button class="btn xform" data-rotate="180">180°</button>
+        <button class="btn xform" data-rotate="270">270°</button>
+        <button class="btn xform toggle" data-flipx>↔ Flip H</button>
+        <button class="btn xform toggle" data-flipy>↕ Flip V</button>
+      </div>
+      <label class="slider"><span>Brightness <em data-out="brightness">100%</em></span>
+        <input type="range" data-f="brightness" min="0" max="300" value="100"></label>
+      <label class="slider"><span>Contrast <em data-out="contrast">100%</em></span>
+        <input type="range" data-f="contrast" min="0" max="300" value="100"></label>
+      <label class="slider"><span>Saturation <em data-out="saturate">100%</em></span>
+        <input type="range" data-f="saturate" min="0" max="300" value="100"></label>
+      <label class="slider"><span>Hue rotate <em data-out="hue-rotate">0°</em></span>
+        <input type="range" data-f="hue-rotate" min="-180" max="180" value="0"></label>
+      <label class="slider"><span>Sharpness <em data-out="sharpness">0%</em></span>
+        <input type="range" data-f="sharpness" min="0" max="200" value="0"></label>
+      <label class="slider"><span>Blur <em data-out="blur">0 px</em></span>
+        <input type="range" data-f="blur" min="0" max="20" value="0"></label>
+      <label class="slider"><span>Sepia <em data-out="sepia">0%</em></span>
+        <input type="range" data-f="sepia" min="0" max="100" value="0"></label>
+      <label class="slider"><span>Grayscale <em data-out="grayscale">0%</em></span>
+        <input type="range" data-f="grayscale" min="0" max="100" value="0"></label>
+      <label class="slider"><span>Invert <em data-out="invert">0%</em></span>
+        <input type="range" data-f="invert" min="0" max="100" value="0"></label>
+      <label class="slider"><span>Zoom <em data-out="zoom">100%</em></span>
+        <input type="range" data-f="zoom" min="100" max="400" value="100"></label>
+      <label class="checkbox"><input type="checkbox" id="objectFit"> Fit (vs Fill)</label>
+      <div class="row">
+        <button id="btnFiltersReset" class="btn ghost">Reset all</button>
+        <button id="btnSavePreset"   class="btn ghost">Save preset</button>
+        <button id="btnLoadPreset"   class="btn ghost">Load preset</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>Stats</h2>
+      <pre id="stats">—</pre>
+    </section>
+
+    <footer>
+      <a href="https://github.com/bluenviron/mediamtx" target="_blank" rel="noopener">MediaMTX</a> →
+      WHEP @ <code>127.0.0.1:8889/cam/whep</code><br>
+      RTSP src: <code>192.168.0.21:8554/stream1</code>
+    </footer>
+  </aside>
+</div>
+
+<dialog id="snapDialog">
+  <h3>Screenshot</h3>
+  <img id="snapImg" alt="">
+  <div class="row" style="justify-content:flex-end">
+    <a id="snapDl" class="btn primary" download>Save</a>
+    <button id="snapClose" class="btn">Close</button>
+  </div>
+</dialog>
+
+<script src="/portal.js"></script>
+</body>
+</html>
