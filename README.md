@@ -8,7 +8,7 @@ in your browser — sub-second latency, audio, screenshots, recording, image
 adjustments — **without** the proprietary app, **without** the ThroughTek
 Kalay cloud relay, and **without** anyone else's servers in the middle.
 
-![Portal screenshot](photos/portal-ui.png)
+![Portal in action — live 1080p feed + control panel](photos/example.png)
 
 ```
   cam -- RTSP/H.264 + PCMU --> MediaMTX --- WebRTC ---> your browser
@@ -123,8 +123,6 @@ once**, and you do NOT need a serial cable to *use* the portal — only to
 
 ### What's in the box
 
-![Box contents](photos/box-contents.jpg)
-
 The cam I bought ships with a tiny USB-C breakout and… that's it. No
 manual, no firmware, no documentation. The only way to use it as
 advertised is to install **Allcam365** on a phone and hand your WiFi
@@ -134,28 +132,44 @@ Hard pass.
 ### Step 1 — open the case
 
 Two small Phillips screws on the bottom, the case pops open by hand.
-Inside is a single small PCB.
+Inside is a single small PCB. Top side (SoC, WiFi module, USB-C, FFC
+connector to the sensor) and bottom side (4 MB SPI flash, mic,
+microSD slot):
 
-![Board overview](photos/board-overview.jpg)
+![Board top — SoC, WiFi module, USB-C](photos/IMG_7881.JPG)
+![Board bottom — flash, mic, SD slot](photos/IMG_7882.JPG)
 
 The visible chips are:
 
-* Fullhan **FH8626V100** SoC (the big square one)
+* Fullhan **FH8626V100** SoC (the big square one, top side)
 * Realtek **RTL8188FTV** WiFi module (the little daughter-board with the
-  RF can)
-* SmartSens **SC1346** image sensor (under the lens)
-* GigaDevice **GD25Q32E** 4 MB SPI NOR flash
+  RF can, top side)
+* SmartSens **SC1346** image sensor (under the lens, connected via FFC ribbon)
+* GigaDevice **GD25Q32E** 4 MB SPI NOR flash (bottom side)
+
+**Microscope close-ups** of the various ICs and the board revision
+marking — useful if you're trying to identify a near-relative board:
+
+| ![](photos/Screenshot_2026-05-29_at_12.50.21%E2%80%AFpm.png) | ![](photos/Screenshot_2026-05-29_at_12.51.58%E2%80%AFpm.png) | ![](photos/Screenshot_2026-05-29_at_12.52.39%E2%80%AFpm.png) |
+|:-:|:-:|:-:|
+| JWT 40 MHz crystal | regulators / power rail | WiFi RF section |
+| ![](photos/Screenshot_2026-05-29_at_12.52.57%E2%80%AFpm.png) | ![](photos/Screenshot_2026-05-29_at_12.53.15%E2%80%AFpm.png) | ![](photos/Screenshot_2026-05-29_at_12.54.15%E2%80%AFpm.png) |
+| WiFi module SoC | small-signal RF | board rev `A11B_V5.0 2022.10.06` |
 
 ### Step 2 — find the UART pads
 
 Three pads I tagged in the photo below are the FinSH (RT-Thread serial
 shell) UART:
 
-![UART pads](photos/board-uart-pads.jpg)
+![UART pads — TX, RX, GND](photos/RXTX.png)
 
-* **TX**  → cam talks
-* **RX**  → cam listens
+* **TX**  → cam talks   (label says *"TX to RX Serial"* — wire to the adapter's **RX**)
+* **RX**  → cam listens (label says *"RX to TX Serial"* — wire to the adapter's **TX**)
 * **GND** → ground
+
+The annotations on the photo tell you which side of the cross-over to
+solder; you can also see the silkscreen `TX` / `RX` labels on the board
+itself in the top-side photo above.
 
 Voltage is **3.3 V** (the SoC is a 3.3 V part). **Do not connect a 5 V
 serial line.** An FT232RL set to 3.3 V is perfect. So is any USB-TTL
@@ -163,11 +177,8 @@ adapter with a 3.3 V switch.
 
 ### Step 3 — wire up an FT232RL (or equivalent)
 
-The FT232RL pinout:
-
-![FT232RL pinout](photos/ft232rl-pinout.png)
-
-Cross-wire so the cam's TX goes to the adapter's RX and vice versa:
+Cross-wire so the cam's **TX** goes to the adapter's **RX** and vice
+versa:
 
 | FT232RL pin | Cam pad |
 |------------|---------|
@@ -177,8 +188,6 @@ Cross-wire so the cam's TX goes to the adapter's RX and vice versa:
 
 **Do not connect the FT232RL's 5V or 3V3 pins** — power the cam from its
 normal USB-C connector. Connecting both can fight or fry things.
-
-![Wiring](photos/ft232rl-wiring.jpg)
 
 Plug the FT232RL into your Mac. It should show up as
 `/dev/cu.usbserial-XXXXXXXX` (run `ls /dev/cu.*` to find the exact
@@ -196,8 +205,6 @@ screen /dev/cu.usbserial-XXXXXXXX 115200
 
 Now power on the cam (USB-C). You'll see a flood of boot messages and
 eventually:
-
-![First boot in terminal](photos/terminal-first-boot.png)
 
 ```
 Password for login: 
@@ -267,9 +274,11 @@ Back to the [Quick start](#quick-start-you-already-know-your-cams-rtsp-url) at t
 
 ## Using the portal
 
-Open <http://127.0.0.1:8888/> in your browser.
+Open <http://127.0.0.1:8888/> in your browser. The page is split into a
+live video stage on the left and a control sidebar on the right with
+every knob the cam (or your browser's renderer) can turn:
 
-![Portal with filters applied](photos/portal-filters.png)
+![Portal control sidebar — every knob in one panel](photos/Sidebarexample.png)
 
 ### Streaming panel
 
