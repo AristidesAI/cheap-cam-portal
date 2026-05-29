@@ -10,7 +10,14 @@ mediamtx.yml
 logs/*
 !logs/.gitkeep
 
+# downloaded windows binaries (re-fetched by windows/setup.bat)
+windows/bin/*
+!windows/bin/.gitkeep
+
 # OS junk
 .DS_Store
+Thumbs.db
+desktop.ini
 __pycache__/
 *.pyc
+*.pyo

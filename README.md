@@ -82,6 +82,10 @@ dozen rebadges. They also appear on most other Fullhan-SDK-based cams.
 
 ## Quick start (you already know your cam's RTSP URL)
 
+> **On Windows?** Skip this section — see [windows/README.md](windows/README.md)
+> for a double-clickable installer that downloads MediaMTX and FFmpeg
+> automatically. The portal HTML/JS is identical to the Mac build.
+
 ```bash
 # 1. clone
 git clone https://github.com/YOUR-USERNAME/cheap-cam-portal.git ~/cheap-cam-portal
@@ -500,28 +504,40 @@ rm -f .env mediamtx.yml
 
 ```
 cheap-cam-portal/
-├── README.md                    # this file
+├── README.md                    # this file (Mac-focused; Windows: see windows/README.md)
 ├── LICENSE                       # MIT
-├── .env.example                  # copy → .env (or let setup.sh do it)
+├── .env.example                  # copy → .env (or let setup.sh / setup.bat do it)
 ├── .gitignore
-├── mediamtx.template.yml         # rendered → mediamtx.yml by setup.sh
-├── setup.sh                      # one-time install + start
-├── start.sh                      # launch services (idempotent)
-├── stop.sh                       # kill services
-├── regen-config.sh               # regenerate mediamtx.yml from .env
-├── install-autostart.sh          # opt-in launchd agents
-├── uninstall-autostart.sh
-├── portal/
+├── mediamtx.template.yml         # rendered → mediamtx.yml on either platform
+├── portal/                       # cross-platform — shared between Mac and Windows
 │   ├── portal.py                 # Python backend
 │   ├── index.html
 │   ├── portal.css
 │   └── portal.js
 ├── photos/                       # README image assets — drop yours here
 │   └── README.md                 # what each filename should be
+├── logs/                         # mediamtx + portal stdout/stderr (shared)
+│
+│   # ---- macOS ----
+├── setup.sh                      # one-time install + start
+├── start.sh                      # launch services (idempotent)
+├── stop.sh                       # kill services
+├── regen-config.sh               # regenerate mediamtx.yml from .env
+├── install-autostart.sh          # opt-in launchd agents
+├── uninstall-autostart.sh
 ├── launchd/
 │   ├── com.cheapcamportal.mediamtx.plist.template
 │   └── com.cheapcamportal.portal.plist.template
-└── logs/                         # mediamtx + portal stdout/stderr
+│
+│   # ---- Windows ----
+└── windows/
+    ├── README.md                 # Windows quick-start
+    ├── cli.py                    # the brain (handles all subcommands)
+    ├── setup.bat                 # one-time install + start
+    ├── start.bat / stop.bat / regen-config.bat
+    ├── install-autostart.bat     # opt-in Startup-folder shortcut
+    ├── uninstall-autostart.bat
+    └── bin/                      # downloaded mediamtx.exe + ffmpeg.exe land here
 ```
 
 ---
