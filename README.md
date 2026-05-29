@@ -5,16 +5,17 @@
 <sub>☕ Find this useful? <a href="https://buymeacoffee.com/aristides.lab">buymeacoffee.com/aristides.lab</a> — fuels the next teardown.</sub>
 
 **Take your AU$30 AliExpress WiFi camera back from the cloud.** This is a
-self-contained Mac portal that streams your cheap "mini WiFi 4K cam" live
-in your browser — sub-second latency, audio, screenshots, recording, image
-adjustments — **without** the proprietary app, **without** the ThroughTek
-Kalay cloud relay, and **without** anyone else's servers in the middle.
+self-contained local portal that streams your cheap "mini WiFi 4K cam"
+live in your browser — sub-second latency, audio, screenshots, recording,
+image adjustments — **without** the proprietary app, **without** the
+ThroughTek Kalay cloud relay, and **without** anyone else's servers in
+the middle. Runs on **macOS and Windows**.
 
 ![Portal in action — live 1080p feed + control panel](photos/example.png)
 
 ```
   cam -- RTSP/H.264 + PCMU --> MediaMTX --- WebRTC ---> your browser
-        (over your own LAN)    (Mac, loopback)         (sub-second, audio)
+        (over your own LAN)    (your computer)         (sub-second, audio)
 ```
 
 ---
@@ -34,7 +35,7 @@ Kalay cloud relay, and **without** anyone else's servers in the middle.
 * **Fullscreen + Picture-in-Picture.**
 * **Live stats overlay** — resolution, kbps, fps, packet loss, jitter.
 * **Auto-restart on cam power-cycle.**
-* **Optional: auto-start on Mac login** via a one-shot installer.
+* **Optional: auto-start on login** via a one-shot installer (`launchd` on macOS, Startup-folder shortcut on Windows).
 
 ---
 
@@ -82,11 +83,12 @@ dozen rebadges. They also appear on most other Fullhan-SDK-based cams.
 
 ---
 
-## Quick start (you already know your cam's RTSP URL)
+## Quick start — macOS (you already know your cam's RTSP URL)
 
 > **On Windows?** Skip this section — see [windows/README.md](windows/README.md)
 > for a double-clickable installer that downloads MediaMTX and FFmpeg
-> automatically. The portal HTML/JS is identical to the Mac build.
+> automatically. The portal HTML/JS is identical across platforms; only
+> the launcher scripts differ.
 
 ```bash
 # 1. clone
@@ -111,8 +113,9 @@ That's it. The portal page is at <http://127.0.0.1:8888/>.
 
 If you close the terminal, the services keep running in the background.
 Stop them with `./stop.sh`, start them again with `./start.sh`.
-To make them launch automatically every time you log into your Mac,
-run **`./install-autostart.sh`** (see [Auto-start](#auto-start) below).
+To make them launch automatically every time you log into your computer,
+run **`./install-autostart.sh`** (macOS) or **`windows\install-autostart.bat`**
+(Windows) — see [Auto-start](#auto-start) below.
 
 ---
 
@@ -195,19 +198,31 @@ versa:
 **Do not connect the FT232RL's 5V or 3V3 pins** — power the cam from its
 normal USB-C connector. Connecting both can fight or fry things.
 
-Plug the FT232RL into your Mac. It should show up as
-`/dev/cu.usbserial-XXXXXXXX` (run `ls /dev/cu.*` to find the exact
-name).
+Plug the FT232RL into your computer. The device name depends on your OS:
+
+* **macOS:** `/dev/cu.usbserial-XXXXXXXX` — run `ls /dev/cu.*` to find it.
+* **Windows:** open Device Manager → *Ports (COM & LPT)*. It'll be
+  something like `COM3` or `COM7`.
+* **Linux:** `/dev/ttyUSB0` (or similar) — `dmesg | tail` right after
+  plugging in shows the assignment.
 
 ### Step 4 — open a serial terminal
 
-Any 115200-baud terminal works. I used:
+Any 115200-baud terminal works. Pick whichever fits your OS:
 
-```bash
-# Easiest: macOS's built-in 'screen' command
-screen /dev/cu.usbserial-XXXXXXXX 115200
-# (to exit screen: Ctrl-A, then K, then Y)
-```
+* **macOS:**
+  ```bash
+  screen /dev/cu.usbserial-XXXXXXXX 115200
+  # exit: Ctrl-A, then K, then Y
+  ```
+* **Windows:** download [PuTTY](https://www.putty.org/), open it, set
+  *Connection type* to **Serial**, *Serial line* to your `COM` port,
+  *Speed* to **115200**, click *Open*.
+* **Linux:**
+  ```bash
+  screen /dev/ttyUSB0 115200
+  # or: minicom -D /dev/ttyUSB0 -b 115200
+  ```
 
 Now power on the cam (USB-C). You'll see a flood of boot messages and
 eventually:
@@ -274,7 +289,8 @@ forever.** Everything from here on is over WiFi.
 
 ### Step 8 — run the portal
 
-Back to the [Quick start](#quick-start-you-already-know-your-cams-rtsp-url) at the top.
+Back to the [Quick start](#quick-start--macos-you-already-know-your-cams-rtsp-url)
+(or [windows/README.md](windows/README.md) if you're on Windows).
 
 ---
 
@@ -303,7 +319,7 @@ every knob the cam (or your browser's renderer) can turn:
 | **📸 Screenshot (local)** | Renders the *current displayed frame including filters* to a PNG and pops a save dialog. |
 | **📸 Screenshot (server, full quality)** | Asks the backend to grab one fresh frame from the cam via ffmpeg; saves to `~/Pictures/cam-portal/` and shows you a preview. Bypasses CSS filters. |
 | **⏺ Record (browser)** | Uses the browser's `MediaRecorder` on a canvas that mirrors what you see (filters baked in). Output is a `.webm` (or `.mp4` if your browser supports it) downloaded when you press Stop. |
-| **⏺ Record (server MP4)** | Spawns ffmpeg on the Mac to pull the source RTSP and write an MP4 to `~/Movies/cam-portal/`. Original quality, audio included, immune to tab close. **Recommended.** |
+| **⏺ Record (server MP4)** | Spawns ffmpeg on your computer to pull the source RTSP and write an MP4 (macOS: `~/Movies/cam-portal/`, Windows: `~/Videos/cam-portal/`). Original quality, audio included, immune to tab close. **Recommended.** |
 
 Recent recordings + screenshots show up in the small list beneath the
 buttons.
@@ -356,7 +372,9 @@ flaky WiFi.
 
 ## Auto-start
 
-So you never have to think about this again:
+So you never have to think about this again.
+
+### macOS
 
 ```bash
 ./install-autostart.sh
@@ -367,36 +385,41 @@ This writes two launchd agents into `~/Library/LaunchAgents/`:
 * `com.cheapcamportal.mediamtx.plist` — keeps MediaMTX alive
 * `com.cheapcamportal.portal.plist` — keeps the Python backend alive
 
-Both have `RunAtLoad = true` and `KeepAlive = true`, so they:
+Both have `RunAtLoad = true` and `KeepAlive = true`, so they start at
+login, restart if they crash, and stop at logout / shutdown.
 
-* Start automatically when you log into your Mac,
-* Restart automatically if they crash,
-* Stop when you log out / shut down.
+Reverse with `./uninstall-autostart.sh`.
 
-Reverse it with:
+### Windows
 
-```bash
-./uninstall-autostart.sh
-```
+Double-click `windows\install-autostart.bat`. It drops a shortcut into
+your Startup folder
+(`%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\`) so the
+portal launches silently every time you log in.
 
-After install, the portal is just always at <http://127.0.0.1:8888/>.
-You can pin that tab in your browser.
+Reverse with `windows\uninstall-autostart.bat`.
+
+### Either way
+
+After install, the portal is always at <http://127.0.0.1:8888/>.
+Pin the tab in your browser and forget about it.
 
 ---
 
 ## What survives a power-cycle?
 
-| Thing | Survives cam reboot? | Survives Mac reboot? |
+| Thing | Survives cam reboot? | Survives **computer** reboot? |
 |------|----------------------|----------------------|
 | Cam streams over WiFi on `:8554/stream1` | ✅ yes, RTSP auto-starts | n/a |
 | Cam stays connected to your WiFi | ✅ yes, credentials are flashed | n/a |
-| MediaMTX retries the cam source | ✅ yes (`sourceOnDemand: no`) | ✅ if you ran `./install-autostart.sh` |
-| Portal backend (`portal.py`) | n/a | ✅ if you ran `./install-autostart.sh` |
-| `./start.sh`-launched processes | n/a | ❌ they die with the shell session |
+| MediaMTX retries the cam source | ✅ yes (`sourceOnDemand: no`) | ✅ if you ran the auto-start installer for your OS |
+| Portal backend (`portal.py`) | n/a | ✅ if you ran the auto-start installer for your OS |
+| Manually-launched processes (`./start.sh` / `start.bat`) | n/a | ❌ they die when you close the session |
 
-Translation: once `./install-autostart.sh` is run, you can pull the
-serial cable, power-cycle the cam, reboot the Mac, and the URL still
-works without you doing anything.
+Translation: once you've run the auto-start installer (macOS:
+`./install-autostart.sh`, Windows: `windows\install-autostart.bat`), you
+can pull the serial cable, power-cycle the cam, reboot your computer,
+and the URL still works without you doing anything.
 
 ---
 
@@ -407,7 +430,7 @@ works without you doing anything.
 * Check MediaMTX log: `tail -50 logs/mediamtx.log`
 * If you see `stream is not available`, the cam is unreachable. Check:
     * Cam IP in `.env` matches your router's DHCP table.
-    * Mac is on the same WiFi network as the cam.
+    * Your computer is on the same WiFi network as the cam.
     * `ping <CAM_IP>` succeeds.
 
 ### MediaMTX log says `404 Not Found` for `/stream1`
@@ -436,21 +459,35 @@ works without you doing anything.
 ### Port 8888 or 8889 already in use
 
 * Edit `.env` to set `HTTP_PORT=` and `WEBRTC_PORT=` to free ports.
-* Re-run `./regen-config.sh && ./start.sh`.
+* Re-generate config and restart:
+    * macOS: `./regen-config.sh && ./start.sh`
+    * Windows: `windows\regen-config.bat` then `windows\start.bat`
 
-### Mac's serial port is shared by `qemu` (Android emulator)
+### Localhost port 8554 already claimed (e.g. by an Android emulator)
 
-* If you're running an Android emulator, it may grab `:8554` on
-  localhost. We disabled MediaMTX's RTSP server by default
-  (`rtsp: no` in `mediamtx.template.yml`) so this isn't an issue.
+* If you're running an Android emulator (`qemu` on either OS), it
+  may grab `:8554` on localhost. We disabled MediaMTX's RTSP server by
+  default (`rtsp: no` in `mediamtx.template.yml`) so this isn't an
+  issue for the portal.
 
 ### Re-run setup from scratch
+
+**macOS:**
 
 ```bash
 ./stop.sh
 ./uninstall-autostart.sh 2>/dev/null || true
 rm -f .env mediamtx.yml
 ./setup.sh
+```
+
+**Windows:**
+
+```cmd
+windows\stop.bat
+windows\uninstall-autostart.bat
+del .env mediamtx.yml
+windows\setup.bat
 ```
 
 ---
@@ -467,7 +504,7 @@ rm -f .env mediamtx.yml
            │ RTSP over TCP (your LAN, WiFi)
            ▼
 ┌─────────────────────────┐
-│  MediaMTX (your Mac)    │
+│  MediaMTX (your computer)│
 │  rtsp client (source)   │
 │  webrtc server (loopback)│
 │  127.0.0.1:8889 (WHEP)   │
@@ -506,12 +543,12 @@ rm -f .env mediamtx.yml
 
 ```
 cheap-cam-portal/
-├── README.md                    # this file (Mac-focused; Windows: see windows/README.md)
+├── README.md                    # this file (covers both OSes; Windows specifics: see windows/README.md)
 ├── LICENSE                       # MIT
 ├── .env.example                  # copy → .env (or let setup.sh / setup.bat do it)
 ├── .gitignore
 ├── mediamtx.template.yml         # rendered → mediamtx.yml on either platform
-├── portal/                       # cross-platform — shared between Mac and Windows
+├── portal/                       # cross-platform — shared between macOS and Windows
 │   ├── portal.py                 # Python backend
 │   ├── index.html
 │   ├── portal.css

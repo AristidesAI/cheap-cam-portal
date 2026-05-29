@@ -5,6 +5,7 @@ Image assets referenced by the project README. What's currently here:
 | File                                                | Used in README to show                                              |
 |-----------------------------------------------------|---------------------------------------------------------------------|
 | `aliexpress-listing.png`                            | The AliExpress product page for the cam (HYW_T729_7_A11C)           |
+| `bmc-qr.png`                                        | Buy Me a Coffee QR pointing at buymeacoffee.com/aristides.lab       |
 | `example.png`                                       | Hero shot — portal running with live 1080p feed and controls        |
 | `Sidebarexample.png`                                | Portal control sidebar close-up — every adjustment knob visible     |
 | `IMG_7881.JPG`                                      | iPhone shot — board **top side** (SoC, WiFi, USB-C, sensor FFC)     |

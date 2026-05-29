@@ -1,6 +1,6 @@
 # cheap-cam-portal — Windows
 
-Same portal as the Mac version, packaged for Windows 10 / 11.
+Same portal as the macOS version, packaged for Windows 10 / 11.
 
 ## What you need before you start
 
