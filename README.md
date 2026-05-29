@@ -2,6 +2,8 @@
 
 > *aka **Allcam365 bypass** · **TUTK / ThroughTek Kalay bypass** · **Fullhan FH8626V100 portal** · **HYW_T729_7_A11C firmware unlock** · **yg rtsp server credentials** · sub-second live view of your AU$30 AliExpress "mini 4K WiFi cam" without the cloud.*
 
+<sub>☕ Find this useful? <a href="https://buymeacoffee.com/aristides.lab">buymeacoffee.com/aristides.lab</a> — fuels the next teardown.</sub>
+
 **Take your AU$30 AliExpress WiFi camera back from the cloud.** This is a
 self-contained Mac portal that streams your cheap "mini WiFi 4K cam" live
 in your browser — sub-second latency, audio, screenshots, recording, image
@@ -563,3 +565,20 @@ cheap-cam-portal/
 
 MIT. See `LICENSE`. You owe me nothing. If you want, you can owe me a
 star on the repo.
+
+---
+
+## ☕ Support
+
+If this saved you from installing a sketchy app — or just made your week
+a little better — coffee is appreciated. It quite literally fuels the
+next teardown.
+
+<a href="https://buymeacoffee.com/aristides.lab">
+  <img src="photos/bmc-qr.png" alt="Buy Me a Coffee — buymeacoffee.com/aristides.lab" width="180">
+</a>
+
+**[buymeacoffee.com/aristides.lab](https://buymeacoffee.com/aristides.lab)**
+
+No subscriptions, no obligations. A one-time tip is plenty.
+You can also just star the repo ⭐ — that helps other people find it.
